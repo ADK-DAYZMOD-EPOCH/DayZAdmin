@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: samp.php,v 1.3 2009/11/04 16:52:46 evilpie Exp $  
  */
- 
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * San Andreas: Multiplayer protocol
@@ -28,23 +26,21 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.3 $
  */
-class GameQ_Protocol_samp extends GameQ_Protocol
-{
-    public function status()
-    {
+class GameQ_Protocol_samp extends GameQ_Protocol {
+
+    public function status() {
         $this->p->skip(11);
-        $this->r->add('password',    $this->p->readInt8());
+        $this->r->add('password', $this->p->readInt8());
         $this->r->add('num_players', $this->p->readInt8());
         $this->p->skip();
         $this->r->add('max_players', $this->p->readInt8());
         $this->p->skip(1);
-        $this->r->add('servername',  $this->readString());
-        $this->r->add('gametype',    $this->readString());
-        $this->r->add('map',         $this->readString());
+        $this->r->add('servername', $this->readString());
+        $this->r->add('gametype', $this->readString());
+        $this->r->add('map', $this->readString());
     }
 
-    public function players()
-    {
+    public function players() {
         $this->p->skip(11);
 
         $num_players = $this->p->readInt8();
@@ -57,20 +53,20 @@ class GameQ_Protocol_samp extends GameQ_Protocol
         }
     }
 
-    public function modifyPacket($packet_conf)
-    {
+    public function modifyPacket($packet_conf) {
         $addr = implode('', array_map('chr', explode('.', $packet_conf['addr'])));
-        $port = pack ("S", $packet_conf['port']);
+        $port = pack("S", $packet_conf['port']);
         $packet_conf['data'] = sprintf($packet_conf['data'], $addr, $port);
 
         return $packet_conf;
     }
 
-    private function readString()
-    {
+    private function readString() {
         $l = $this->p->readInt8();
         $this->p->skip(3);
         return $this->p->read($l);
     }
+
 }
+
 ?>

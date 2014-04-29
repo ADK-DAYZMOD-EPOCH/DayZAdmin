@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -18,7 +19,6 @@
  * $Id: Buffer.php,v 1.4 2009/08/13 20:46:40 evilpie Exp $  
  */
 
-
 /**
  * Provide an interface for easy manipulation of a server response
  *
@@ -26,8 +26,8 @@
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.4 $
  */
-class GameQ_Buffer
-{
+class GameQ_Buffer {
+
     /**
      * The original data
      *
@@ -43,8 +43,7 @@ class GameQ_Buffer
      * @access     public
      */
     private $length;
-    
-    
+
     /**
      * Position of pointer
      *
@@ -53,51 +52,42 @@ class GameQ_Buffer
      */
     private $index = 0;
 
-
     /**
      * Constructor
      *
      * @param   string|array    $response   The data
      */
-    public function __construct($data)
-    {
-        $this->data   = $data;
+    public function __construct($data) {
+        $this->data = $data;
         $this->length = strlen($data);
     }
-
 
     /**
      * Return all the data
      *
      * @return  string|array    The data
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->data;
     }
-    
 
     /**
      * Return data currently in the buffer
      *
      * @return  string|array    The data currently in the buffer
      */
-    public function getBuffer()
-    {
+    public function getBuffer() {
         return substr($this->data, $this->index);
     }
-
 
     /**
      * Returns the number of bytes in the buffer
      *
      * @return  int  Length of the buffer
      */
-    public function getLength()
-    {
+    public function getLength() {
         return max($this->length - $this->index, 0);
     }
-
 
     /**
      * Read from the buffer
@@ -105,18 +95,16 @@ class GameQ_Buffer
      * @param   int             $length     Length of data to read
      * @return  string          The data read
      */
-    public function read($length = 1)
-    {
+    public function read($length = 1) {
         if (($length + $this->index) > $this->length) {
             throw new GameQ_ParsingException($this);
         }
-        
+
         $string = substr($this->data, $this->index, $length);
         $this->index += $length;
-        
+
         return $string;
     }
-
 
     /**
      * Read the last character from the buffer
@@ -126,16 +114,14 @@ class GameQ_Buffer
      *
      * @return  string          The data read
      */
-    public function readLast()
-    {
-        $len           = strlen($this->data);
-        $string        = $this->data{strlen($this->data) - 1};
-        $this->data    = substr($this->data, 0, $len - 1);
+    public function readLast() {
+        $len = strlen($this->data);
+        $string = $this->data{strlen($this->data) - 1};
+        $this->data = substr($this->data, 0, $len - 1);
         $this->length -= 1;
-        
+
         return $string;
     }
-    
 
     /**
      * Look at the buffer, but don't remove
@@ -143,22 +129,19 @@ class GameQ_Buffer
      * @param   int             $length     Length of data to read
      * @return  string          The data read
      */
-    public function lookAhead($length = 1)
-    {
+    public function lookAhead($length = 1) {
         $string = substr($this->data, $this->index, $length);
-        
+
         return $string;
     }
-    
-    
+
     /**
      * Skip forward in the buffer
      *
      * @param   int             $length     Length of data to skip
      * @return  void
      */
-    public function skip($length = 1)
-    {
+    public function skip($length = 1) {
         $this->index += $length;
     }
 
@@ -169,23 +152,19 @@ class GameQ_Buffer
      * @param   int   $index  Position to go to
      * @return  void
      */
-    public function jumpto($index)
-    {
+    public function jumpto($index) {
         $this->index = min($index, $this->length - 1);
     }
-
 
     /**
      * Get the current pointer position
      *
      * @return  int  The current pointer position
      */
-    public function getPosition()
-    {
+    public function getPosition() {
         return $this->index;
     }
-    
-    
+
     /**
      * Read from buffer until delimiter is reached
      *
@@ -194,11 +173,10 @@ class GameQ_Buffer
      * @param   string          $delim      Read until this character is reached
      * @return  string          The data read
      */
-    public function readString($delim = "\x00")
-    {
+    public function readString($delim = "\x00") {
         // Get position of delimiter
         $len = strpos($this->data, $delim, min($this->index, $this->length));
-        
+
         // If it is not found then return whole buffer
         if ($len === false) {
             return $this->read(strlen($this->data) - $this->index);
@@ -207,10 +185,9 @@ class GameQ_Buffer
         // Read the string and remove the delimiter
         $string = $this->read($len - $this->index);
         ++$this->index;
-       
+
         return $string;
     }
-
 
     /**
      * Reads a pascal string from the buffer
@@ -220,8 +197,7 @@ class GameQ_Buffer
      *                                to be read
      * @return  string          The data read
      */
-    public function readPascalString($offset = 0, $read_offset = false)
-    {
+    public function readPascalString($offset = 0, $read_offset = false) {
         // Get the proper offset
         $len = $this->readInt8();
         $offset = max($len - $offset, 0);
@@ -229,13 +205,11 @@ class GameQ_Buffer
         // Read the data
         if ($read_offset) {
             return $this->read($offset);
-        }
-        else {
+        } else {
             return substr($this->read($len), 0, $offset);
         }
     }
-        
-    
+
     /**
      * Read from buffer until any of the delimiters is reached
      *
@@ -244,8 +218,7 @@ class GameQ_Buffer
      * @param   array           $delims      Read until these characters are reached
      * @return  string          The data read
      */
-    public function readStringMulti($delims, &$delimfound = null)
-    {
+    public function readStringMulti($delims, &$delimfound = null) {
         // Get position of delimiters
         $pos = array();
         foreach ($delims as $delim) {
@@ -253,7 +226,7 @@ class GameQ_Buffer
                 $pos[] = $p;
             }
         }
-        
+
         // If none are found then return whole buffer
         if (empty($pos)) {
             return $this->read(strlen($this->data) - $this->index);
@@ -263,57 +236,48 @@ class GameQ_Buffer
         sort($pos);
         $string = $this->read($pos[0] - $this->index);
         $delimfound = $this->read();
-       
+
         return $string;
     }
-    
 
     /**
      * Read an int32 from the buffer
      *
      * @return  int             The data read
      */
-    public function readInt32()
-    {
+    public function readInt32() {
         $int = unpack('Lint', $this->read(4));
         return $int['int'];
     }
-
 
     /**
      * Read an int16 from the buffer
      *
      * @return  int             The data read
      */
-    public function readInt16()
-    {
+    public function readInt16() {
         $int = unpack('Sint', $this->read(2));
         return $int['int'];
     }
-
 
     /**
      * Read an int8 from the buffer
      *
      * @return  int             The data read
      */
-    public function readInt8()
-    {
+    public function readInt8() {
         return ord($this->read(1));
     }
-
 
     /**
      * Read an float32 from the buffer
      *
      * @return  int             The data read
      */
-    public function readFloat32()
-    {
+    public function readFloat32() {
         $float = unpack('ffloat', $this->read(4));
         return $float['float'];
     }
-
 
     /**
      * Conversion to float
@@ -322,8 +286,7 @@ class GameQ_Buffer
      * @param      string    $string   String to convert
      * @return     float     32 bit float
      */
-    public function toFloat($string)
-    {
+    public function toFloat($string) {
         // Check length
         if (strlen($string) !== 4) {
             return false;
@@ -334,7 +297,6 @@ class GameQ_Buffer
         return $float['float'];
     }
 
-
     /**
      * Conversion to integer
      *
@@ -343,15 +305,14 @@ class GameQ_Buffer
      * @param      int       $bits     Number of bits
      * @return     int       Integer according to type
      */
-    public function toInt($string, $bits = 8)
-    {
+    public function toInt($string, $bits = 8) {
         // Check length
         if (strlen($string) !== ($bits / 8)) {
             return false;
         }
 
         // Convert
-        switch($bits) {
+        switch ($bits) {
 
             // 8 bit unsigned
             case 8:
@@ -380,4 +341,5 @@ class GameQ_Buffer
     }
 
 }
+
 ?>

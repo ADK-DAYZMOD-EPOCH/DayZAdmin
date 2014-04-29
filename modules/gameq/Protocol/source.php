@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: source.php,v 1.7 2009/05/12 13:14:50 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Source Engine Protocol
@@ -30,42 +28,44 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author      Tom Buskens     <t.buskens@deviation.nl>
  * @version     $Revision: 1.7 $
  */
-class GameQ_Protocol_source extends GameQ_Protocol
-{
+class GameQ_Protocol_source extends GameQ_Protocol {
+
     const TYPE_GOLDSOURCE = 9;
-    const TYPE_SOURCE     = 12;
-    
-    public function details()
-    {
+    const TYPE_SOURCE = 12;
+
+    public function details() {
         // 0x49 for source, 0x6D for goldsource (obsolete)
         $this->p->skip(4);
         $type = $this->p->readInt8();
-        if ($type == 0x6D) $this->r->add('address',  $this->p->readString());
-        else               $this->r->add('protocol', $this->p->readInt8());
-        
-        $this->r->add('hostname',    $this->p->readString());
-        $this->r->add('map',         $this->p->readString());
-        $this->r->add('game_dir',    $this->p->readString());
-        $this->r->add('game_descr',  $this->p->readString());
+        if ($type == 0x6D)
+            $this->r->add('address', $this->p->readString());
+        else
+            $this->r->add('protocol', $this->p->readInt8());
 
-        if ($type != 0x6D) $this->r->add('steamappid',  $this->p->readInt16());
+        $this->r->add('hostname', $this->p->readString());
+        $this->r->add('map', $this->p->readString());
+        $this->r->add('game_dir', $this->p->readString());
+        $this->r->add('game_descr', $this->p->readString());
+
+        if ($type != 0x6D)
+            $this->r->add('steamappid', $this->p->readInt16());
 
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
 
-        if ($type == 0x6D) $this->r->add('protocol',    $this->p->readInt8());
-        else               $this->r->add('num_bots',    $this->p->readInt8());
+        if ($type == 0x6D)
+            $this->r->add('protocol', $this->p->readInt8());
+        else
+            $this->r->add('num_bots', $this->p->readInt8());
 
-        $this->r->add('dedicated',   $this->p->read());
-        $this->r->add('os',          $this->p->read());
-        $this->r->add('password',    $this->p->readInt8());
-        $this->r->add('secure',      $this->p->readInt8());
-        $this->r->add('version',     $this->p->readInt8());
+        $this->r->add('dedicated', $this->p->read());
+        $this->r->add('os', $this->p->read());
+        $this->r->add('password', $this->p->readInt8());
+        $this->r->add('secure', $this->p->readInt8());
+        $this->r->add('version', $this->p->readInt8());
     }
 
-
-    public function players()
-    {
+    public function players() {
         // No players, skip
         //if ($this->p->getLength() < 6) return;
 
@@ -75,16 +75,14 @@ class GameQ_Protocol_source extends GameQ_Protocol
 
         // Players
         while ($this->p->getLength()) {
-            $this->r->addPlayer('id',      $this->p->readInt8());
-            $this->r->addPlayer('name',    $this->p->readString());
-            $this->r->addPlayer('score',   $this->p->readInt32());
-            $this->r->addPlayer('time',    $this->p->readFloat32());
+            $this->r->addPlayer('id', $this->p->readInt8());
+            $this->r->addPlayer('name', $this->p->readString());
+            $this->r->addPlayer('score', $this->p->readInt32());
+            $this->r->addPlayer('time', $this->p->readFloat32());
         }
     }
 
-
-    public function rules()
-    {
+    public function rules() {
         // Rule count
         $this->p->skip(5);
         $count = $this->p->readInt16();
@@ -101,17 +99,15 @@ class GameQ_Protocol_source extends GameQ_Protocol
         }
     }
 
-    public function parseChallenge($packet)
-    {
+    public function parseChallenge($packet) {
         // Header
         $this->p->skip(5);
         return sprintf($packet, $this->p->read(4));
     }
 
-    public function preprocess($packets)
-    {
+    public function preprocess($packets) {
         $result = array();
-        $type   = false;
+        $type = false;
         $compressed = false;
 
 
@@ -142,7 +138,8 @@ class GameQ_Protocol_source extends GameQ_Protocol
         }
 
         // Unsplit packet, simply return
-        if ($type === false) return $packets[0];
+        if ($type === false)
+            return $packets[0];
 
         foreach ($packets as $packet) {
 
@@ -152,30 +149,29 @@ class GameQ_Protocol_source extends GameQ_Protocol
             $p->skip(4);
             $request_id = $p->readInt32();
 
-            if ($p->getLength() < 5) continue;
+            if ($p->getLength() < 5)
+                continue;
 
             // Goldsource packet
             if ($type == self::TYPE_GOLDSOURCE) {
-                $byte        = $p->readInt8();
+                $byte = $p->readInt8();
                 $num_packets = $byte & 0x0F;
-                $cur_packet  = ($byte >> 4) & 0x0F;
+                $cur_packet = ($byte >> 4) & 0x0F;
             }
             // Source packet, may be compressed
             else {
                 $num_packets = $p->readInt8();
-                $cur_packet  = $p->readInt8();
+                $cur_packet = $p->readInt8();
                 //$split_size  = $this->readInt16();
-
                 // Packet is compressed if first bit is 1
                 if ($request_id & 0x80000000) {
                     $compressed = true;
                     $packet_decompressed = $p->readInt32();
-                    $packet_checksum     = $p->readInt32();
+                    $packet_checksum = $p->readInt32();
                 }
             }
 
             $result[$cur_packet] = $p->getBuffer();
-
         }
 
         // Sort packets
@@ -183,28 +179,30 @@ class GameQ_Protocol_source extends GameQ_Protocol
 
         // Decompress if neccesary
         if ($compressed) {
-            if (!function_exists('bzdecompress')) return false;
+            if (!function_exists('bzdecompress'))
+                return false;
 
             $result = array_map('bzdecompress', $result);
         }
         // Left 4 dead
         else if (count($result) > 1) {
-            foreach ($result as &$r) $r = substr($r, 2);
+            foreach ($result as &$r)
+                $r = substr($r, 2);
         }
 
         return implode('', $result);
-
     }
 
-    private function detect($packets)
-    {
+    private function detect($packets) {
         foreach ($packets as $packet) {
             $m = preg_match("#^(\xFE|\xFF)\xFF{3}.{5}\xFF{4}#", $packet);
-            if ($m) return self::TYPE_GOLDSOURCE;
+            if ($m)
+                return self::TYPE_GOLDSOURCE;
         }
 
         return self::TYPE_SOURCE;
     }
 
 }
+
 ?>

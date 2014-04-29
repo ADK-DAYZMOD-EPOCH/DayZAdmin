@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: quake2.php,v 1.3 2007/08/13 10:15:56 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Quake2 Protocol
@@ -31,23 +29,21 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.3 $
  */
-class GameQ_Protocol_quake2 extends GameQ_Protocol
-{
+class GameQ_Protocol_quake2 extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Packet header
         $this->header();
-        
+
         // Key / value pairs
         while ($this->p->getLength()) {
             $this->r->add(
-                $this->p->readString('\\'),
-                $this->p->readStringMulti(array('\\', "\x0a"), $delimfound)
-                );
-                
+                    $this->p->readString('\\'), $this->p->readStringMulti(array('\\', "\x0a"), $delimfound)
+            );
+
             if ($delimfound === "\x0a") {
                 break;
             }
@@ -58,17 +54,16 @@ class GameQ_Protocol_quake2 extends GameQ_Protocol
             $this->players();
         }
     }
-    
-    
+
     /*
      * Players, this is the rear part of the getstatus packet
      */
-    public function players()
-    {
+
+    public function players() {
         while ($this->p->getLength()) {
             $this->r->addPlayer('frags', $this->p->readString("\x20"));
             $this->r->addPlayer('ping', $this->p->readString("\x20"));
-            
+
             // Player name
             $this->r->addPlayer('nick', $this->readQuoteString());
 
@@ -87,20 +82,20 @@ class GameQ_Protocol_quake2 extends GameQ_Protocol
         }
     }
 
-    private function readQuoteString()
-    {
+    private function readQuoteString() {
         if ($this->p->read() !== '"') {
             throw new GameQ_ParsingException($this->p);
         }
         return $this->p->readString('"');
     }
 
-    private function header()
-    {
+    private function header() {
         if ($this->p->readInt32() !== -1) {
             throw new GameQ_ParsingException($this->p);
         }
         $this->p->readString("\\");
     }
+
 }
+
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: breed.php,v 1.1 2007/06/30 12:43:43 tombuskens Exp $  
  */
- 
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Breed protocol
@@ -29,20 +27,21 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_breed extends GameQ_Protocol
-{
+class GameQ_Protocol_breed extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Skip header
         $this->p->skip(5);
-        $this->r->add('servername',  $this->p->readString());
-        $this->r->add('map',         $this->p->readString());
-        $this->r->add('game_type',   $this->p->readString());
+        $this->r->add('servername', $this->p->readString());
+        $this->r->add('map', $this->p->readString());
+        $this->r->add('game_type', $this->p->readString());
         $this->r->add('num_players', $this->p->readString());
         $this->r->add('max_players', $this->p->readString());
     }
+
 }
+
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: tribes2.php,v 1.1 2007/07/07 14:52:01 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Tribes 2 protocol
@@ -28,10 +26,9 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_tribes2 extends GameQ_Protocol
-{
-    public function info()
-    {
+class GameQ_Protocol_tribes2 extends GameQ_Protocol {
+
+    public function info() {
         // Header
         $this->p->skip(6);
 
@@ -43,21 +40,20 @@ class GameQ_Protocol_tribes2 extends GameQ_Protocol
         $this->r->add('hostname', $this->p->readPascalString());
     }
 
-    public function status()
-    {
+    public function status() {
         // Header
         $this->p->skip(6);
 
         // Vars
-        $this->r->add('mod',         $this->p->readPascalString());
-        $this->r->add('gametype',    $this->p->readPascalString());
-        $this->r->add('map',         $this->p->readPascalString());
+        $this->r->add('mod', $this->p->readPascalString());
+        $this->r->add('gametype', $this->p->readPascalString());
+        $this->r->add('map', $this->p->readPascalString());
         $this->readBitflag($this->p->read());
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
-        $this->r->add('num_bots',    $this->p->readInt8());
-        $this->r->add('cpu',         $this->p->readInt16());
-        $this->r->add('info',        $this->p->readPascalString());
+        $this->r->add('num_bots', $this->p->readInt8());
+        $this->r->add('cpu', $this->p->readInt16());
+        $this->r->add('info', $this->p->readPascalString());
 
         $this->p->skip(2);
 
@@ -65,29 +61,25 @@ class GameQ_Protocol_tribes2 extends GameQ_Protocol
         $this->players();
     }
 
-    private function teams()
-    {
+    private function teams() {
         $num_teams = $this->p->read();
         $this->r->add('num_teams', $num_teams);
         $this->p->skip();
 
         for ($i = 0; $i < $num_teams; $i++) {
-            $this->r->addTeam('name',  $this->p->readString("\x09"));
+            $this->r->addTeam('name', $this->p->readString("\x09"));
             $this->r->addTeam('score', $this->p->readString("\x0a"));
         }
     }
 
-    private function players()
-    {
+    private function players() {
         // TODO
     }
 
-
-    private function readBitflag($flag)
-    {
+    private function readBitflag($flag) {
         $vars = array('dedicated', 'password', 'linux',
-                      'tournament', 'no_alias');
-        
+            'tournament', 'no_alias');
+
         $bit = 1;
         foreach ($vars as $var) {
             $value = ($flag & $bit) ? 1 : 0;
@@ -95,6 +87,7 @@ class GameQ_Protocol_tribes2 extends GameQ_Protocol
             $bit *= 2;
         }
     }
+
 }
 ?>
 

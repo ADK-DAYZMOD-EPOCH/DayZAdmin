@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: gamespy2.php,v 1.4 2007/10/16 12:35:47 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * GameSpy 2 Protocol
@@ -29,13 +27,12 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.4 $
  */
-class GameQ_Protocol_gamespy2 extends GameQ_Protocol
-{
+class GameQ_Protocol_gamespy2 extends GameQ_Protocol {
     /*
      * Status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Header
         $this->header();
 
@@ -45,12 +42,11 @@ class GameQ_Protocol_gamespy2 extends GameQ_Protocol
         }
     }
 
-
     /*
      * Player packet
      */
-    public function players()
-    {
+
+    public function players() {
         // Header
         $this->header();
 
@@ -61,8 +57,7 @@ class GameQ_Protocol_gamespy2 extends GameQ_Protocol
         $this->getSub('teams');
     }
 
-    private function getSub($type)
-    {
+    private function getSub($type) {
         // The number of $type entries
         try {
             $this->r->add('num_' . $type, $this->p->readInt8());
@@ -100,8 +95,7 @@ class GameQ_Protocol_gamespy2 extends GameQ_Protocol
         }
     }
 
-    private function header()
-    {
+    private function header() {
         // Header
         if ($this->p->read() !== "\x00") {
             throw new GameQ_ParsingException($this->p);
@@ -110,12 +104,15 @@ class GameQ_Protocol_gamespy2 extends GameQ_Protocol
 
         // Halo has an extra \x00 in the player header
         // TODO: verify this, check other games
-        if ($this->p->lookAhead() == "\x00") $this->p->read();
+        if ($this->p->lookAhead() == "\x00")
+            $this->p->read();
 
         // Check if we have a complete packet
         if ($this->p->readLast() !== "\x00") {
             throw new GameQ_ParsingException($this->p);
         }
     }
+
 }
+
 ?>

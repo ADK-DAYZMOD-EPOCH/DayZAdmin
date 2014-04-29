@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,9 +18,7 @@
  *
  * $Id: gamespy3.php,v 1.5 2009/03/07 16:35:18 tombuskens Exp $  
  */
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Gamespy 3 Protocol
@@ -27,18 +26,18 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.5 $
  */
-class GameQ_Protocol_gamespy3 extends GameQ_Protocol
-{
+class GameQ_Protocol_gamespy3 extends GameQ_Protocol {
 
-    public function status()
-    {
+    public function status() {
         // Var / value pairs
         $this->info();
 
         // Players and teams
-        while ($this->p->getLength() and ($type = $this->p->readInt8())) {
-            if ($type == 1)      $this->getSub('players');
-            else if ($type == 2) $this->getSub('teams');
+        while ($this->p->getLength() and ( $type = $this->p->readInt8())) {
+            if ($type == 1)
+                $this->getSub('players');
+            else if ($type == 2)
+                $this->getSub('teams');
             else {
                 $this->getSub('players');
                 $this->getSub('teams');
@@ -46,38 +45,37 @@ class GameQ_Protocol_gamespy3 extends GameQ_Protocol
         }
     }
 
-    private function info()
-    {
+    private function info() {
         while ($this->p->getLength()) {
             $var = $this->p->readString();
 
-            if (empty($var)) break;
+            if (empty($var))
+                break;
 
             $this->r->add($var, $this->p->readString());
         }
     }
 
-    private function getSub($type)
-    {
+    private function getSub($type) {
         while ($this->p->getLength()) {
 
             // Get the header
             $header = $this->p->readString();
-            if ($header == "") break;
+            if ($header == "")
+                break;
             $this->p->skip();
 
             // Get the values
             while ($this->p->getLength()) {
                 $value = $this->p->readString();
-                if ($value === '') break;
+                if ($value === '')
+                    break;
                 $this->r->addSub($type, $header, $value);
             }
         }
     }
 
-
-    public function preprocess($packets)
-    {
+    public function preprocess($packets) {
         $result = array();
 
         // Get packet index, remove header
@@ -103,13 +101,13 @@ class GameQ_Protocol_gamespy3 extends GameQ_Protocol
             // First packet
             $fst = substr($result[$i], 0, -1);
             // Second packet
-            $snd = $result[$i+1];
+            $snd = $result[$i + 1];
 
             // Get last variable from first packet
-            $fstvar = substr($fst, strrpos($fst, "\x00")+1);
+            $fstvar = substr($fst, strrpos($fst, "\x00") + 1);
 
             // Get first variable from last packet
-            $snd = substr($snd, strpos($snd, "\x00")+2);
+            $snd = substr($snd, strpos($snd, "\x00") + 2);
             $sndvar = substr($snd, 0, strpos($snd, "\x00"));
 
             // Check if fstvar is a substring of sndvar
@@ -123,13 +121,14 @@ class GameQ_Protocol_gamespy3 extends GameQ_Protocol
         return implode("", $result);
     }
 
-    public function parseChallenge($packet)
-    {
+    public function parseChallenge($packet) {
         $this->p->skip(5);
         $cc = (int) $this->p->readString();
-        $x = pack( "H*", sprintf("%08X", $cc));
+        $x = pack("H*", sprintf("%08X", $cc));
 
         return sprintf($packet, $x);
     }
+
 }
+
 ?>

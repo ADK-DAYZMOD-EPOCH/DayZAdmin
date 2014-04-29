@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -18,7 +19,6 @@
  * $Id: Result.php,v 1.4 2007/07/29 18:58:20 tombuskens Exp $  
  */
 
-
 /**
  * Provide an interface for easy storage of a parsed server response
  *
@@ -26,8 +26,8 @@
  * @author    Tom Buskens    <t.buskens@deviation.nl>
  * @version   $Revision: 1.4 $
  */
-class GameQ_Result
-{
+class GameQ_Result {
+
     /**
      * Formatted server response
      *
@@ -41,11 +41,9 @@ class GameQ_Result
      * @param      string    $name      Variable name
      * @param      string    $value     Variable value
      */
-    public function add($name, $value)
-    {
+    public function add($name, $value) {
         $this->result[$name] = $value;
     }
-
 
     /**
      * Adds player variable to output
@@ -53,8 +51,7 @@ class GameQ_Result
      * @param       string   $name      Variable name
      * @param       string   $value     Variable value
      */
-    public function addPlayer($name, $value)
-    {
+    public function addPlayer($name, $value) {
         $this->addSub('players', $name, $value);
     }
 
@@ -64,10 +61,9 @@ class GameQ_Result
      * @param       string   $name      Variable name
      * @param       string   $value     Variable value
      */
-    public function addTeam($name, $value)
-    {
+    public function addTeam($name, $value) {
         $this->addSub('teams', $name, $value);
-    }    
+    }
 
     /**
      * Add a variable to a category
@@ -76,13 +72,12 @@ class GameQ_Result
      * @param  $key    string  The variable name
      * @param  $value  string  The variable value
      */
-    public function addSub($sub, $key, $value)
-    {
+    public function addSub($sub, $key, $value) {
         // Nothing of this type yet, set an empty array
-        if (!isset($this->result[$sub]) or !is_array($this->result[$sub])) {
+        if (!isset($this->result[$sub]) or ! is_array($this->result[$sub])) {
             $this->result[$sub] = array();
         }
-        
+
         // Find the first entry that doesn't have this variable
         $found = false;
         for ($i = 0; $i != count($this->result[$sub]); $i++) {
@@ -104,8 +99,7 @@ class GameQ_Result
      *
      * @return  mixed  All results
      */
-    public function fetch()
-    {
+    public function fetch() {
         return $this->result;
     }
 
@@ -115,9 +109,10 @@ class GameQ_Result
      * @param   string  $var    The variable name
      * @return  mixed   The variable value
      */
-    public function get($var)
-    {
+    public function get($var) {
         return isset($this->result[$var]) ? $this->result[$var] : null;
     }
+
 }
+
 ?>

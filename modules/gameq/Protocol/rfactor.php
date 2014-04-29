@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,9 +18,7 @@
  *
  * $Id: rfactor.php,v 1.2 2009/08/13 20:46:40 evilpie Exp $  
  */
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * rFactor Protocol
@@ -27,11 +26,9 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.2 $
  */
-class GameQ_Protocol_rfactor extends GameQ_Protocol
-{
+class GameQ_Protocol_rfactor extends GameQ_Protocol {
 
-    public function status()
-    {
+    public function status() {
         // Header
         $this->p->jumpto(17);
         $this->r->add('version', $this->p->readInt16());
@@ -55,5 +52,7 @@ class GameQ_Protocol_rfactor extends GameQ_Protocol
         $this->r->add('time', $this->p->readInt16());
         $this->r->add('laps', $this->p->readInt16() / 16);
     }
+
 }
+
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: u2e.php,v 1.1 2007/06/30 12:43:43 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Unreal Engine 2 protocol
@@ -29,13 +27,12 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author          Tom Buskens     <ortega@php.net>
  * @version         $Revision: 1.1 $
  */
-class GameQ_Protocol_u2e extends GameQ_Protocol
-{
+class GameQ_Protocol_u2e extends GameQ_Protocol {
     /*
      * Players
      */
-    public function players()
-    {
+
+    public function players() {
         // Header
         $this->header("\x02");
 
@@ -48,10 +45,10 @@ class GameQ_Protocol_u2e extends GameQ_Protocol
             } else {
                 $result->addPlayer('id', $id);
             }
-            
+
             // Common data
-            $result->addPlayer('name',  $this->_readUnrealString());
-            $result->addPlayer('ping',  $buffer->readInt32());
+            $result->addPlayer('name', $this->_readUnrealString());
+            $result->addPlayer('ping', $buffer->readInt32());
             $result->addPlayer('score', $buffer->readInt32());
 
             // Stats ID
@@ -61,21 +58,18 @@ class GameQ_Protocol_u2e extends GameQ_Protocol
             if ($id === 0) {
                 for ($i = 0, $ii = $buffer->readInt8(); $i < $ii; $i++) {
                     $result->addPlayer(
-                        $buffer->readPascalString(1),
-                        $this->_readUnrealString()
+                            $buffer->readPascalString(1), $this->_readUnrealString()
                     );
-                }                
+                }
             }
         }
-    }    
+    }
 
-    
-    
     /*
      * Rules packet
      */
-    public function rules()
-    {
+
+    public function rules() {
         // Header
         $this->header("\x01");
 
@@ -85,40 +79,38 @@ class GameQ_Protocol_u2e extends GameQ_Protocol
             $key = $buffer->readPascalString(1);
 
             // Make sure mutators don't overwrite each other
-            if ($key === 'Mutator') $key .= ++$i;
-            
+            if ($key === 'Mutator')
+                $key .= ++$i;
+
             $result->add($key, $buffer->readPascalString(1));
         }
     }
 
-    
     /*
      * Status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Header
         $this->header("\x00");
 
-        $result->add('serverid',    $buffer->readInt32());          // 0
-        $result->add('serverip',    $buffer->readPascalString(1));  // empty
-        $result->add('gameport',    $buffer->readInt32());
-        $result->add('queryport',   $buffer->readInt32());          // 0
-        $result->add('servername',  $buffer->readPascalString(1));
-        $result->add('mapname',     $buffer->readPascalString(1));
-        $result->add('gametype',    $buffer->readPascalString(1));
+        $result->add('serverid', $buffer->readInt32());          // 0
+        $result->add('serverip', $buffer->readPascalString(1));  // empty
+        $result->add('gameport', $buffer->readInt32());
+        $result->add('queryport', $buffer->readInt32());          // 0
+        $result->add('servername', $buffer->readPascalString(1));
+        $result->add('mapname', $buffer->readPascalString(1));
+        $result->add('gametype', $buffer->readPascalString(1));
         $result->add('playercount', $buffer->readInt32());
-        $result->add('maxplayers',  $buffer->readInt32());
-        $result->add('ping',        $buffer->readInt32());          // 0
-
+        $result->add('maxplayers', $buffer->readInt32());
+        $result->add('ping', $buffer->readInt32());          // 0
         // UT2004 only
         // Check if the buffer contains enough bytes
         if ($buffer->getLength() > 6) {
-            $result->add('flags',   $buffer->readInt32());
-            $result->add('skill',   $buffer->readInt16());
+            $result->add('flags', $buffer->readInt32());
+            $result->add('skill', $buffer->readInt16());
         }
     }
-
 
     /**
      * Read an Unreal Engine 2 string
@@ -128,8 +120,7 @@ class GameQ_Protocol_u2e extends GameQ_Protocol
      * @param       object      $buffer         Buffer object
      * @return      string      The string
      */
-    private function _readUnrealString()
-    {
+    private function _readUnrealString() {
         // Normal pascal string
         if (ord($buffer->readAhead(1)) < 129) {
             return $buffer->readPascalString(1);
@@ -149,12 +140,11 @@ class GameQ_Protocol_u2e extends GameQ_Protocol
         for ($i = 0, $ii = strlen($encstr); $i < $ii; $i += 2) {
             $str .= $encstr{$i};
         }
-        
+
         return $str;
     }
 
-    private function header($char)
-    {
+    private function header($char) {
         $buffer->skip(4);
 
         // Packet id
@@ -162,22 +152,23 @@ class GameQ_Protocol_u2e extends GameQ_Protocol
             throw new GameQ_ParsingException($this->p);
         }
     }
-    
-    
+
     /*
      * Join multiple packets
      *
      * The order does not matter as each packet is "finished".
      * Just join them together and remove extra headers.
      */
-    public function joinPackets($packets)
-    {
+
+    public function joinPackets($packets) {
         // Strip the header from all but the first packet
         for ($i = 1, $ii = count($packets); $i < $ii; $i++) {
             $packets[$i] = substr($packets[$i], 5);
         }
-        
+
         return implode('', $packets);
     }
+
 }
+
 ?>

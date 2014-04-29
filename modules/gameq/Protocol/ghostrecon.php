@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: ghostrecon.php,v 1.1 2007/07/02 10:14:32 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Ghost Recon protocol
@@ -28,20 +26,19 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author          Tom Buskens    <t.buskens@deviation.nl>
  * @version         $Revision: 1.1 $
  */
-class GameQ_Protocol_ghostrecon extends GameQ_Protocol
-{
+class GameQ_Protocol_ghostrecon extends GameQ_Protocol {
     /*
      * Status
      */
-    public function status()
-    {
+
+    public function status() {
         // Unknown
         $this->p->skip(25);
 
         $this->r->add('servername', $this->readGhostString());
-        $this->r->add('map',        $this->readGhostString());
-        $this->r->add('mission',    $this->readGhostString());
-        $this->r->add('gametype',   $this->readGhostString());
+        $this->r->add('map', $this->readGhostString());
+        $this->r->add('mission', $this->readGhostString());
+        $this->r->add('gametype', $this->readGhostString());
     }
 
     /**
@@ -49,13 +46,14 @@ class GameQ_Protocol_ghostrecon extends GameQ_Protocol
      *
      * @return   string    The string
      */
-    private function readGhostString()
-    {
-        if ($this->p->getLength() < 4) return '';
+    private function readGhostString() {
+        if ($this->p->getLength() < 4)
+            return '';
         $this->p->skip(4);
 
         return $this->p->readString();
-        
     }
+
 }
+
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: freelancer.php,v 1.2 2008/02/22 13:33:40 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Freelancer protocol
@@ -29,17 +27,16 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author    Tom Buskens    <t.buskens@deviation.nl>
  * @version   $Revision: 1.2 $
  */
-class GameQ_Protocol_freelancer extends GameQ_Protocol
-{
+class GameQ_Protocol_freelancer extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Server name length @ 3
         $this->p->skip(3);
         $name_length = $this->p->readInt8() - 90;
-        
+
         // Max players @ 20
         $this->p->skip(17);
         $this->r->add('max_players', $this->p->readInt8() - 1);
@@ -51,5 +48,7 @@ class GameQ_Protocol_freelancer extends GameQ_Protocol
         $this->p->skip(66);
         $this->r->add('servername', $this->p->read($name_length));
     }
+
 }
+
 ?>

@@ -1,5 +1,6 @@
 <?php
-	$iid = "1"; //Instance ID
+
+$iid = "1"; //Instance ID
 	$serverip = "127.0.0.1";  //game-server host
 	$serverip_internal = "127.0.0.1";  //game-server host internal IP (for hosts behind NAT, set to same as $serverip if not behind NAT)
 	$rconpassword = "123456"; //rcon password

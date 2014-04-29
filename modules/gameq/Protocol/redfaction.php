@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: redfaction.php,v 1.1 2007/06/30 12:43:43 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Red Faction Protocol
@@ -28,29 +26,31 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author     Tom Buskens   <t.buskens@deviation.nl>
  * @version    $Revision: 1.1 $
  */
-class GameQ_Protocol_redfaction extends GameQ_Protocol
-{
+class GameQ_Protocol_redfaction extends GameQ_Protocol {
     /*
      * getstatus packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Header, we're being carefull here
         if ($this->p->read() !== "\x00") {
             throw new GameQ_ParsingException($this->p);
         }
-        
+
         // Dunno
-        while ($this->p->read() !== "\x00") {}
+        while ($this->p->read() !== "\x00") {
+            
+        }
         $this->p->read();
 
         // Data
-        $this->r->add('servername',  $this->p->readString());
-        $this->r->add('gametype',    $this->p->readInt8());
+        $this->r->add('servername', $this->p->readString());
+        $this->r->add('gametype', $this->p->readInt8());
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
-        $this->r->add('map',         $this->p->readString());
+        $this->r->add('map', $this->p->readString());
         $this->p->read();
-        $this->r->add('dedicated',   $this->p->readInt8());
+        $this->r->add('dedicated', $this->p->readInt8());
     }
+
 }

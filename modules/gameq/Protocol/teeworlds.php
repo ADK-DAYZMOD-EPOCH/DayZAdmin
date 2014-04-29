@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: teeworlds.php,v 1.2 2009/03/09 13:36:32 tombuskens Exp $  
  */
- 
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Teeworlds protocol
@@ -28,35 +26,35 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.2 $
  */
-class GameQ_Protocol_teeworlds extends GameQ_Protocol
-{
+class GameQ_Protocol_teeworlds extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         $this->p->skip(14);
 
-        $this->r->add('version',     $this->p->readString());
-        $this->r->add('hostname',    $this->p->readString());
-        $this->r->add('map',         $this->p->readString());
-        $this->r->add('gametype',    $this->p->readString());
+        $this->r->add('version', $this->p->readString());
+        $this->r->add('hostname', $this->p->readString());
+        $this->r->add('map', $this->p->readString());
+        $this->r->add('gametype', $this->p->readString());
 
 
-        $this->r->add('password',    $this->p->readString());
-        $this->r->add('ping',        $this->p->readString());
+        $this->r->add('password', $this->p->readString());
+        $this->r->add('ping', $this->p->readString());
         $this->r->add('num_players', $this->p->readString());
         $this->r->add('max_players', $this->p->readString());
 
         $this->players();
     }
 
-    private function players()
-    {
+    private function players() {
         while ($name = $this->p->readString()) {
-            $this->r->addPlayer('name',  $name);
+            $this->r->addPlayer('name', $name);
             $this->r->addPlayer('score', $this->p->readString());
         }
     }
+
 }
+
 ?>

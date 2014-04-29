@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: silverback.php,v 1.1 2007/07/11 09:12:31 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Silverback Engine Protocol
@@ -29,17 +27,17 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens    <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_silverback extends GameQ_Protocol
-{
+class GameQ_Protocol_silverback extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         while ($this->p->getLength()) {
             $var = $this->p->readString("\xFE");
 
-            if ($var == 'players') break;
+            if ($var == 'players')
+                break;
 
             $this->r->add($var, $this->p->readString("\xFF"));
         }
@@ -50,19 +48,18 @@ class GameQ_Protocol_silverback extends GameQ_Protocol
     /*
      * player / team data
      */
-    public function players()
-    {
+
+    public function players() {
         $team = '';
         $players = 0;
-        
+
         while ($this->p->getLength()) {
             if ($this->p->lookAhead() == "\x20") {
                 $this->p->skip();
                 $this->r->addPlayer('name', $this->p->readString("\x0a"));
                 $this->r->addPlayer('team', $team);
                 ++$players;
-            }
-            else {
+            } else {
                 $team = $this->p->readString("\x0a");
                 if ($team != '--empty--') {
                     $this->r->addTeam('name', $team);
@@ -71,12 +68,11 @@ class GameQ_Protocol_silverback extends GameQ_Protocol
         }
     }
 
-
     /*
      * Merge packets
      */
-    public function preprocess($packets)
-    {
+
+    public function preprocess($packets) {
         // Cut off headers and join packets
         $return = '';
 
@@ -86,5 +82,7 @@ class GameQ_Protocol_silverback extends GameQ_Protocol
 
         return $return;
     }
+
 }
+
 ?>

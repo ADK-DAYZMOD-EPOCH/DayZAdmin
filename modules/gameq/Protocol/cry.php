@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: cry.php,v 1.2 2008/04/22 18:52:27 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * CryEngine protocol
@@ -28,10 +26,9 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.2 $
  */
-class GameQ_Protocol_cry extends GameQ_Protocol
-{
-    public function rules()
-    {
+class GameQ_Protocol_cry extends GameQ_Protocol {
+
+    public function rules() {
         // Header
         $this->header();
 
@@ -41,8 +38,7 @@ class GameQ_Protocol_cry extends GameQ_Protocol
         }
     }
 
-    public function status()
-    {
+    public function status() {
         // Header
         $this->header();
 
@@ -50,42 +46,39 @@ class GameQ_Protocol_cry extends GameQ_Protocol
         $this->p->read(15);
 
         $this->r->add('hostname', $this->p->readString());
-        $this->r->add('mod',      $this->p->readString());
+        $this->r->add('mod', $this->p->readString());
         $this->r->add('gametype', $this->p->readString());
-        $this->r->add('map',      $this->p->readString());
+        $this->r->add('map', $this->p->readString());
 
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
-        $this->r->add('password',    $this->p->readInt8());
+        $this->r->add('password', $this->p->readInt8());
         $this->p->read(2);
-        $this->r->add('punkbuster',  $this->p->readInt8());
+        $this->r->add('punkbuster', $this->p->readInt8());
     }
-    
 
-    public function players()
-    {
+    public function players() {
         $this->header();
         $this->p->skip(2);
 
         while ($this->p->getLength()) {
-            $this->r->addPlayer('name',    $this->p->readString());
-            $this->r->addPlayer('team',    $this->p->readString());
+            $this->r->addPlayer('name', $this->p->readString());
+            $this->r->addPlayer('team', $this->p->readString());
             $this->p->skip(1);
-            $this->r->addPlayer('score',   $this->p->readInt8());
+            $this->r->addPlayer('score', $this->p->readInt8());
             $this->p->skip(3);
-            $this->r->addPlayer('ping',    $this->p->readInt8());
+            $this->r->addPlayer('ping', $this->p->readInt8());
             $this->p->skip(7);
         }
     }
 
-
-    private function header()
-    {
+    private function header() {
         if ($this->p->read(4) !== "\x7f\xff\xff\xff") {
             throw new GameQ_ParsingException($this->p);
         }
         $this->p->skip(2);
     }
+
 }
 ?>
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,7 +18,6 @@
  *
  * $Id: sortplayers.php,v 1.2 2008/08/18 21:34:55 tombuskens Exp $  
  */
-
 require_once GAMEQ_BASE . 'Filter.php';
 
 /**
@@ -41,9 +41,8 @@ require_once GAMEQ_BASE . 'Filter.php';
  * @author     Tom Buskens <t.buskens@deviation.nl>
  * @version    $Revision: 1.2 $
  */
-class GameQ_Filter_sortplayers extends GameQ_Filter
-{
-    
+class GameQ_Filter_sortplayers extends GameQ_Filter {
+
     /**
      * Sort the player array
      *
@@ -51,10 +50,10 @@ class GameQ_Filter_sortplayers extends GameQ_Filter
      * @param     array    $server      Array containing server data
      * @return    array    The original array, with sorted player array
      */
-    public function filter($original, $server)
-    {
+    public function filter($original, $server) {
         // No player array, return default
-        if (!isset($original['players']) or !is_array($original['players'])) return $original;
+        if (!isset($original['players']) or ! is_array($original['players']))
+            return $original;
         $players = $original['players'];
 
         // Default sort parameters
@@ -63,8 +62,10 @@ class GameQ_Filter_sortplayers extends GameQ_Filter
 
         // Override default parameters, if any
         if (is_array($this->params)) {
-            if (isset($this->params[0])) $sort_key = $this->params[0];
-            if (isset($this->params[1])) $sort_asc = $this->params[1];
+            if (isset($this->params[0]))
+                $sort_key = $this->params[0];
+            if (isset($this->params[1]))
+                $sort_asc = $this->params[1];
         }
         else if (isset($this->params)) {
             $sort_key = $this->params;
@@ -84,5 +85,7 @@ class GameQ_Filter_sortplayers extends GameQ_Filter
         $original['players'] = $players;
         return $original;
     }
+
 }
+
 ?>

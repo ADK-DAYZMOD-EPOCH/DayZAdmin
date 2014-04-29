@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,7 +18,6 @@
  *
  * $Id:$  
  */
-
 require_once GAMEQ_BASE . 'Filter.php';
 
 /**
@@ -26,21 +26,20 @@ require_once GAMEQ_BASE . 'Filter.php';
  * @author     Tom Schuster <evilpie@users.sf.net>
  * @version    $Revision:$
  */
-class GameQ_Filter_normalise extends GameQ_Filter
-{
+class GameQ_Filter_normalise extends GameQ_Filter {
+
     private $translate;
     private $allowed;
-    
+
     /**
      * Set variables
      *
      */
-    public function __construct()
-    { 
+    public function __construct() {
 
         $this->player = array(
-            'name'          => array('client_nickname', 'name'),
-            'channel'       => array('cid')
+            'name' => array('client_nickname', 'name'),
+            'channel' => array('cid')
         );
     }
 
@@ -51,10 +50,10 @@ class GameQ_Filter_normalise extends GameQ_Filter
      * @param     array    $server      Array containing server data
      * @return    array    The original array, with normalised variables
      */
-    public function filter($original, $server)
-    {
+    public function filter($original, $server) {
         $result = array();
-        if (empty($original)) return $result;
+        if (empty($original))
+            return $result;
 
         // Normalise results
         $result = $this->normalise($original, $this->vars);
@@ -68,26 +67,22 @@ class GameQ_Filter_normalise extends GameQ_Filter
             foreach ($result['players'] as $key => $player) {
                 $result['players'][$key] = array_merge($player, $this->normalise($player, $this->player));
             }
-			
-			$result['gq_numplayers'] = count($result['players']);
+
+            $result['gq_numplayers'] = count($result['players']);
+        } else {
+            $result['players'] = array();
         }
-        else
-		{
-			$result['players'] = array();
-		}
 
         unset($result['gq_players']);
 
-		
+
         // Merge and sort array
         $result = (array_merge($original, $result));
         ksort($result);
 
         return $result;
-
     }
-        
-        
+
     /**
      * Normalise an array
      *
@@ -95,8 +90,7 @@ class GameQ_Filter_normalise extends GameQ_Filter
      * @param     array    $vars    An array containing source and target names
      * @return    array    A normalised array
      */
-    private function normalise($data, $vars)
-    {
+    private function normalise($data, $vars) {
         // Create a new array, with all the specified variables
         $new = $this->fill($vars);
 
@@ -124,8 +118,7 @@ class GameQ_Filter_normalise extends GameQ_Filter
      * @param     mixed    $val     Value of each key
      * @return    array    An array filled with keys
      */
-    private function fill($vars, $val = false)
-    {
+    private function fill($vars, $val = false) {
         $data = array();
 
         foreach ($vars as $target => $source) {
@@ -134,5 +127,7 @@ class GameQ_Filter_normalise extends GameQ_Filter
 
         return $data;
     }
+
 }
+
 ?>

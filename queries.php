@@ -1,7 +1,8 @@
 <?php
+
 include ('config.php');
 
-if(isset($_SESSION['user_id'])) {
+if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
     // Access lvls
@@ -646,5 +647,4 @@ WHERE
 	od.Instance = ?
 AND od.Inventory LIKE ?
 ";
-
 ?>

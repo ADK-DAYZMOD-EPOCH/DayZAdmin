@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: cs2d.php,v 1.1 2008/04/14 18:04:50 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Counterstrike 2d Protocol
@@ -28,26 +26,26 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_cs2d extends GameQ_Protocol
-{
-    public function status()
-    {
+class GameQ_Protocol_cs2d extends GameQ_Protocol {
+
+    public function status() {
         $this->p->skip(2);
-        $this->r->add('hostname',    $this->readString());
-        $this->r->add('password',    $this->p->readInt8());
-        $this->r->add('mapname',     $this->readString());
+        $this->r->add('hostname', $this->readString());
+        $this->r->add('password', $this->p->readInt8());
+        $this->r->add('mapname', $this->readString());
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
-        $this->r->add('fog_of_war',  $this->p->readInt8());
-        $this->r->add('war_mode',    $this->p->readInt8());
-        $this->r->add('version',     $this->readString());
+        $this->r->add('fog_of_war', $this->p->readInt8());
+        $this->r->add('war_mode', $this->p->readInt8());
+        $this->r->add('version', $this->readString());
     }
 
-    private function readString()
-    {
+    private function readString() {
         $str = $this->p->readString("\x0D");
         $this->p->skip(1);
         return $str;
     }
+
 }
+
 ?>

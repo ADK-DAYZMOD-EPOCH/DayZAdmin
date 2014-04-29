@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: quake3.php,v 1.5 2010/02/10 14:54:42 evilpie Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Quake3 Protocol
@@ -29,23 +27,21 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens    <t.buskens@deviation.nl>
  * @version        $Revision: 1.5 $
  */
-class GameQ_Protocol_quake3 extends GameQ_Protocol
-{
+class GameQ_Protocol_quake3 extends GameQ_Protocol {
     /*
      * getstatus packet
      */
-    public function getstatus($header = 'statusResponse')
-    {
+
+    public function getstatus($header = 'statusResponse') {
         // Packet header
         $this->header($header);
-        
+
         // Key / value pairs
         while ($this->p->getLength()) {
             $this->r->add(
-                $this->p->readString('\\'),
-                $this->p->readStringMulti(array('\\', "\x0a"), $delimfound)
-                );
-                
+                    $this->p->readString('\\'), $this->p->readStringMulti(array('\\', "\x0a"), $delimfound)
+            );
+
             if ($delimfound === "\x0a") {
                 break;
             }
@@ -54,19 +50,18 @@ class GameQ_Protocol_quake3 extends GameQ_Protocol
         // Players
         $this->players();
     }
-    
-    
+
     /*
      * Players, this is the rear part of the getstatus packet
      */
-    public function players()
-    {
+
+    public function players() {
         $count = 0;
-        
+
         while ($this->p->getLength()) {
             $this->r->addPlayer('frags', $this->p->readString("\x20"));
-            $this->r->addPlayer('ping',  $this->p->readString("\x20"));
-            
+            $this->r->addPlayer('ping', $this->p->readString("\x20"));
+
             // Team, currently only used in nexuiz
             $del = $this->p->lookAhead();
             if ($del != '' and $del != '"') {
@@ -89,27 +84,28 @@ class GameQ_Protocol_quake3 extends GameQ_Protocol
 
         $this->r->add('clients', $count);
     }
-    
-    
+
     /*
      * getinfo packet
      */
-    public function getinfo()
-    {
+
+    public function getinfo() {
         $this->getstatus('infoResponse');
     }
 
     /*
      * packet header
      */
-    private function header($tag)
-    {
+
+    private function header($tag) {
         if ($this->p->read(4) !== "\xFF\xFF\xFF\xFF"
-            or $this->p->read(strlen($tag)) !== $tag
-            or $this->p->read(2) !== "\x0a\\"
+                or $this->p->read(strlen($tag)) !== $tag
+                or $this->p->read(2) !== "\x0a\\"
         ) {
             throw new GameQ_ParsingException($this->p);
         }
     }
+
 }
+
 ?>

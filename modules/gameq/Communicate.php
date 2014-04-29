@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -18,7 +19,6 @@
  * $Id: Communicate.php,v 1.12 2009/10/20 20:34:22 evilpie Exp $  
  */
 
-    
 /**
  * Handles all communication with the gameservers
  *
@@ -26,9 +26,9 @@
  * @author    Tom Buskens <t.buskens@deviation.nl>
  * @version   $Revision: 1.12 $ 
  */
-class GameQ_Communicate
-{
-    private $sockets    = array();
+class GameQ_Communicate {
+
+    private $sockets = array();
 
     /**
      * Perform a batch query
@@ -39,17 +39,18 @@ class GameQ_Communicate
      * @param     int      $sock       Local socket number to open
      * @return    array    Packet data
      */
-    public function query($packets, $timeout, $type = 'data', $sock)
-    {
+    public function query($packets, $timeout, $type = 'data', $sock) {
         // Create a socket for each packet
         foreach ($packets as $pid => &$packet) {
-			
+
             // We only send packets for the current type
-            if (!isset($packet[$type])) continue;
-			
+            if (!isset($packet[$type]))
+                continue;
+
             // Open a socket on the server
             $socket = $this->open($packet['addr'], $packet['port'], $pid, $sock, $timeout, $packet['transport']);
-            if ($socket === false) continue;
+            if ($socket === false)
+                continue;
 
             // Write data to the socket
             $this->write($socket, $packet[$type]);
@@ -72,11 +73,12 @@ class GameQ_Communicate
         }
 
         // Close sockets
-        if ($type != 'challenge') $this->close();
+        if ($type != 'challenge')
+            $this->close();
 
         return $packets;
     }
-    
+
     /**
      * Open an UDP socket.
      *
@@ -89,41 +91,40 @@ class GameQ_Communicate
      * @param    string      $transport  Transport type, udp/tcp
      * @return   resource    Socket object, or false if the connection failed
      */
-    private function open($address, $port, $pid, $sock, $timeout, $transport = 'udp')
-    {
+    private function open($address, $port, $pid, $sock, $timeout, $transport = 'udp') {
         // Check if we already opened a socket for this packet
         // This should only be so if it is a challenge-response type packet
-        if (isset($this->sockets[$pid])) return $this->sockets[$pid];
-        
+        if (isset($this->sockets[$pid]))
+            return $this->sockets[$pid];
+
         // Resolve address
         $address = $this->getIp($address);
         if ($address === false) {
             return false;
         }
 
-        $errno  = null;
+        $errno = null;
         $errstr = null;
 
         // Set socket context
-       
+
         $context = stream_context_create();
-		if ($sock != 0)
-		{
-			$opts['socket']['bindto'] = '0:' . $sock;
-			stream_context_set_option ($context, $opts);
-		}
-		
+        if ($sock != 0) {
+            $opts['socket']['bindto'] = '0:' . $sock;
+            stream_context_set_option($context, $opts);
+        }
+
         // Open udp socket to client
-        $addr    = sprintf("%s://%s:%d", $transport, $address, $port);
+        $addr = sprintf("%s://%s:%d", $transport, $address, $port);
         // Timeout is only applied for tcp connections
-        $socket  = stream_socket_client($addr, $errno, $errstr, ($timeout/1000), STREAM_CLIENT_CONNECT, $context);
+        $socket = stream_socket_client($addr, $errno, $errstr, ($timeout / 1000), STREAM_CLIENT_CONNECT, $context);
 
         // Set non-blocking, add socket to list
         if ($socket !== false) {
             $this->sockets[$pid] = $socket;
             stream_set_blocking($socket, false);
         }
-        
+
         return $socket;
     }
 
@@ -133,8 +134,7 @@ class GameQ_Communicate
      * @param    resource    $socket    Socket to write to
      * @param    string      $packet    String to write
      */
-    private function write($socket, $packet)
-    {
+    private function write($socket, $packet) {
         fwrite($socket, $packet);
     }
 
@@ -145,45 +145,47 @@ class GameQ_Communicate
      * @param    int      $timeout    Maximum waiting time (ms)
      * @return   array    Result data
      */
-    private function listen($timeout)
-    {
+    private function listen($timeout) {
         // Initialize
-        $loops     = 0;
-        $maxloops  = 50;
-        $result    = array();
+        $loops = 0;
+        $maxloops = 50;
+        $result = array();
         $starttime = microtime(true);
-        $r         = $this->sockets;
-        $w         = null;
-        $e         = null;
+        $r = $this->sockets;
+        $w = null;
+        $e = null;
 
-        if (count($this->sockets) == 0) return $result;
+        if (count($this->sockets) == 0)
+            return $result;
 
-        while (($t = $timeout * 1000 - (microtime(true) - $starttime) * 10000) > 0 ) {
+        while (($t = $timeout * 1000 - (microtime(true) - $starttime) * 10000) > 0) {
 
             $s = stream_select($r, $w, $e, 0, $t);
-            if ($s === false || $s <= 0) break;
+            if ($s === false || $s <= 0)
+                break;
 
-            if (++$loops > $maxloops) break;
+            if (++$loops > $maxloops)
+                break;
 
             foreach ($r as $socket) {
                 $response = stream_socket_recvfrom($socket, 2048);
 
-                if ($response === false) continue;
+                if ($response === false)
+                    continue;
 
                 $result[(int) $socket][] = $response;
             }
 
             $r = $this->sockets;
         }
-        
+
         return $result;
     }
 
     /**
      * Close all sockets.
      */
-    private function close()
-    {
+    private function close() {
         foreach ($this->sockets as &$socket) {
             fclose($socket);
         }
@@ -196,10 +198,9 @@ class GameQ_Communicate
      * @param    string    $addr    An ip or hostname
      * @return   string    An IP address, or false if the address was invalid
      */
-    public function getIp($address)
-    {
+    public function getIp($address) {
         // If it isn't a valid IP assume it is a hostname
-        $preg = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}' . 
+        $preg = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}' .
                 '(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$#';
         if (!preg_match($preg, $address)) {
             $result = gethostbyname($address);
@@ -207,12 +208,14 @@ class GameQ_Communicate
             // Not a valid host nor IP
             if ($result === $address) {
                 $result = false;
-             }
+            }
         } else {
             $result = $address;
         }
-        
+
         return $result;
     }
+
 }
+
 ?>

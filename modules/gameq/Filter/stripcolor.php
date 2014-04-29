@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: stripcolor.php,v 1.3 2009/12/21 23:18:40 evilpie Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Filter.php';
-
 
 /**
  * Strips colortags from ouput strings
@@ -29,8 +27,8 @@ require_once GAMEQ_BASE . 'Filter.php';
  * @author    Tom Buskens    <t.buskens@deviation.nl>
  * @version   $Revision: 1.3 $
  */
-class GameQ_Filter_stripcolor extends GameQ_Filter
-{ 
+class GameQ_Filter_stripcolor extends GameQ_Filter {
+
     /**
      * Filter function
      * Receives the initial server list, and the results.
@@ -40,8 +38,7 @@ class GameQ_Filter_stripcolor extends GameQ_Filter
      * @param     array    $servers    The server it was obtained from
      * @return    array    Modified results
      */
-    public function filter($result, $server)
-    {
+    public function filter($result, $server) {
         switch ($server['prot']) {
 
             case 'quake2':
@@ -53,7 +50,7 @@ class GameQ_Filter_stripcolor extends GameQ_Filter
             default:
                 break;
         }
-            
+
         return $result;
     }
 
@@ -63,9 +60,10 @@ class GameQ_Filter_stripcolor extends GameQ_Filter
      * @param  $string  string  String to strip
      * @param  $key     string  Array key
      */
-    private function stripQuake(&$string, $key)
-    {
+    private function stripQuake(&$string, $key) {
         $string = preg_replace('#(\^.)#', '', $string);
     }
+
 }
+
 ?>

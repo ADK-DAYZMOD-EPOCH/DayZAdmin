@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: cube.php,v 1.1 2007/07/04 09:08:36 tombuskens Exp $  
  */
- 
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Cube Engine protocol
@@ -28,13 +26,12 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_cube extends GameQ_Protocol
-{
+class GameQ_Protocol_cube extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Header
         if (!$this->p->read() == "\x00") {
             throw new GameQ_ParsingException($this->p);
@@ -42,14 +39,15 @@ class GameQ_Protocol_cube extends GameQ_Protocol
         $this->p->skip(2);
 
         // Vars
-        $this->r->add('protocol',       $this->p->readInt8());
-        $this->r->add('mode',           $this->p->readInt8());
-        $this->r->add('num_players',    $this->p->readInt8());
+        $this->r->add('protocol', $this->p->readInt8());
+        $this->r->add('mode', $this->p->readInt8());
+        $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('time_remaining', $this->p->readInt8());
-        $this->r->add('map',            $this->p->readString());
-        $this->r->add('servername',     $this->p->readString());
-        $this->r->add('max_players',    $this->p->readInt8());
+        $this->r->add('map', $this->p->readString());
+        $this->r->add('servername', $this->p->readString());
+        $this->r->add('max_players', $this->p->readInt8());
     }
 
 }
+
 ?>

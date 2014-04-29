@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: warsow.php,v 1.1 2007/07/04 09:08:36 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol/quake3.php';
-
 
 /**
  * Warsow Protocol
@@ -30,26 +28,26 @@ require_once GAMEQ_BASE . 'Protocol/quake3.php';
  * @author         Tom Buskens    <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_warsow extends GameQ_Protocol_quake3
-{
+class GameQ_Protocol_warsow extends GameQ_Protocol_quake3 {
     /*
      * Players, this is the rear part of the getstatus packet
      */
-    public function players()
-    {
+
+    public function players() {
         while ($this->p->getLength() and $this->p->lookAhead(11) != '\\challenge\\') {
 
             $this->r->addPlayer('frags', $this->p->readString("\x20"));
-            $this->r->addPlayer('ping',  $this->p->readString("\x20"));
-            
+            $this->r->addPlayer('ping', $this->p->readString("\x20"));
+
             // Player name
-            if ($this->p->read() !== '"') { 
+            if ($this->p->read() !== '"') {
                 throw new GameQ_ParsingException($this->p);
             }
             $this->r->addPlayer('nick', $this->p->readString('"'));
             $this->r->addPlayer('team', $this->p->readString("\x0a"));
         }
     }
+
 }
 ?>
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -18,34 +19,31 @@
  * $Id: Filter.php,v 1.4 2008/08/18 21:34:55 tombuskens Exp $  
  */
 
-
 /**
  * Abstract class which all filters must inherit
  *
  * @author    Tom Buskens    <t.buskens@deviation.nl>
  * @version   $Revision: 1.4 $
  */
-class GameQ_Filter
-{
+class GameQ_Filter {
+
     protected $params = array();
-    
+
     /**
      * Constructor, receives parameters
      *
      * @param    array    $params    Filter parameters
      */
-    function __construct($params)
-    {
+    function __construct($params) {
         if (is_array($params)) {
             foreach ($params as $key => $param) {
                 $this->params[$key] = $param;
             }
-        }
-        else {
+        } else {
             $this->params = $params;
         }
     }
-    
+
     /**
      * Filter function
      * Receives the initial server list, and the results.
@@ -55,9 +53,10 @@ class GameQ_Filter
      * @param     array    $servers    The initial server list
      * @return    array    Modified results
      */
-    public function filter($results, $servers)
-    {
+    public function filter($results, $servers) {
         return $results;
     }
+
 }
+
 ?>

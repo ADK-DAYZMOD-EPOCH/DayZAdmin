@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: hexen2.php,v 1.1 2007/07/11 09:12:31 tombuskens Exp $  
  */
- 
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Hexen 2 protocol
@@ -28,22 +26,23 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_hexen2 extends GameQ_Protocol
-{
+class GameQ_Protocol_hexen2 extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Header?
         $this->p->skip(5);
 
-        $this->r->add('address',     $this->p->readString());
-        $this->r->add('servername',  $this->p->readString());
-        $this->r->add('map',         $this->p->readString());
+        $this->r->add('address', $this->p->readString());
+        $this->r->add('servername', $this->p->readString());
+        $this->r->add('map', $this->p->readString());
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
         $this->p->skip(); // unknown
     }
+
 }
+
 ?>

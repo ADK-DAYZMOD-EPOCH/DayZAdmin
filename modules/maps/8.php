@@ -1,4 +1,5 @@
 <?php
+
 include ('queries.php');
 
 $res1 = $db->GetAll($map8_players);
@@ -9,5 +10,4 @@ $markers = array();
 $markers = array_merge($markers, markers_player($res1, $map));
 $markers = array_merge($markers, markers_vehicle($res2, $map));
 $markers = array_merge($markers, markers_deployable($res3, $map));
-
 ?>

@@ -1,35 +1,31 @@
 <?php
-	error_reporting (E_ALL ^ E_NOTICE);
-	
-	$res = $db->GetAll($table1);
-    $pnumber = is_array($res) ? count($res) : 0;
 
-	if(isset($_GET['page']))
-	{
-		$pageNum = $_GET['page'];
-	}
-	$offset = ($pageNum - 1) * $rowsPerPage;
-	$maxPage = ceil($pnumber/$rowsPerPage);			
+error_reporting(E_ALL ^ E_NOTICE);
 
-	for($page = 1; $page <= $maxPage; $page++)
-	{
-	   if ($page == $pageNum)
-	   {
-		  $nav .= " $page "; // no need to create a link to current page
-	   }
-	   else
-	   {
-		  $nav .= "$self&page=$page";
-	   }
-	}
+$res = $db->GetAll($table1);
+$pnumber = is_array($res) ? count($res) : 0;
 
-    $query = $table1." LIMIT ".$offset.",".$rowsPerPage;
-	$res = $db->GetAll($query);
+if (isset($_GET['page'])) {
+    $pageNum = $_GET['page'];
+}
+$offset = ($pageNum - 1) * $rowsPerPage;
+$maxPage = ceil($pnumber / $rowsPerPage);
 
-	$tableheader = header_player(0);
-		
-	foreach($res as $row) {
-		$tablerows .= row_player($row);
-	}
-	include ('paging.php');
+for ($page = 1; $page <= $maxPage; $page++) {
+    if ($page == $pageNum) {
+        $nav .= " $page "; // no need to create a link to current page
+    } else {
+        $nav .= "$self&page=$page";
+    }
+}
+
+$query = $table1 . " LIMIT " . $offset . "," . $rowsPerPage;
+$res = $db->GetAll($query);
+
+$tableheader = header_player(0);
+
+foreach ($res as $row) {
+    $tablerows .= row_player($row);
+}
+include ('paging.php');
 ?>

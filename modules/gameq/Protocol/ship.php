@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: ship.php,v 1.1 2007/06/30 12:43:43 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol/source.php';
-
 
 /**
  * The ship protocol
@@ -31,31 +29,32 @@ require_once GAMEQ_BASE . 'Protocol/source.php';
  * @author    Tom Buskens    <t.buskens@deviation.nl>
  * @version   $Revision: 1.1 $
  */
-class GameQ_Protocol_ship extends GameQ_Protocol_source
-{
-    public function details()
-    {
+class GameQ_Protocol_ship extends GameQ_Protocol_source {
+
+    public function details() {
         // Header
         $this->header('I');
-        
+
         // Rules
-        $result->add('protocol',    $buffer->readInt8());
-        $result->add('hostname',    $buffer->readString());
-        $result->add('map',         $buffer->readString());
-        $result->add('game_dir',    $buffer->readString());
-        $result->add('game_descr',  $buffer->readString());
-        $result->add('steamappid',  $buffer->readInt16());
+        $result->add('protocol', $buffer->readInt8());
+        $result->add('hostname', $buffer->readString());
+        $result->add('map', $buffer->readString());
+        $result->add('game_dir', $buffer->readString());
+        $result->add('game_descr', $buffer->readString());
+        $result->add('steamappid', $buffer->readInt16());
         $result->add('num_players', $buffer->readInt8());
         $result->add('max_players', $buffer->readInt8());
-        $result->add('num_bots',    $buffer->readInt8());
-        $result->add('dedicated',   $buffer->read());
-        $result->add('os',          $buffer->read());
-        $result->add('password',    $buffer->readInt8());
-        $result->add('secure',      $buffer->readInt8());
-        $result->add('game_mode',   $buffer->readInt8());
-        $result->add('witness_count',   $buffer->readInt8());
-        $result->add('witness_time',    $buffer->readInt8());
-        $result->add('version',     $buffer->readInt8());
+        $result->add('num_bots', $buffer->readInt8());
+        $result->add('dedicated', $buffer->read());
+        $result->add('os', $buffer->read());
+        $result->add('password', $buffer->readInt8());
+        $result->add('secure', $buffer->readInt8());
+        $result->add('game_mode', $buffer->readInt8());
+        $result->add('witness_count', $buffer->readInt8());
+        $result->add('witness_time', $buffer->readInt8());
+        $result->add('version', $buffer->readInt8());
     }
+
 }
+
 ?>

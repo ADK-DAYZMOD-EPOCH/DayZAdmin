@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: quakeworld.php,v 1.1 2007/06/30 12:43:43 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * QuakeWorld Protocol
@@ -28,72 +26,78 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Aidan Lister <aidan@php.net>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_quakeworld extends GameQ_Protocol
-{
+class GameQ_Protocol_quakeworld extends GameQ_Protocol {
     /*
      * Rules
      * Status
      */
-    public function status()
-    {
+
+    public function status() {
         // Header
         if ($this->p->readInt32() !== -1
-            or $this->p->read(2) !== 'n\\'
+                or $this->p->read(2) !== 'n\\'
         ) {
             throw new GameQ_ParsingException($this->p);
         }
 
-        
+
         while ($this->p->getLength()) {
             $this->r->add(
-                $this->p->readString('\\'),
-                $this->p->readStringMulti(array('\\', "\x0a"), $delimfound)
-                );
-                
+                    $this->p->readString('\\'), $this->p->readStringMulti(array('\\', "\x0a"), $delimfound)
+            );
+
             if ($delimfound === "\x0a") {
                 break;
             }
         }
     }
-    
-    
+
     /*
      * Players
      */
-    protected function players()
-    {
+
+    protected function players() {
         // Header
         if ($this->p->readInt32() !== -1
-            or $this->p->read() !== 'n'
+                or $this->p->read() !== 'n'
         ) {
             throw new GameQ_ParsingException($this->p);
-        }   
-        
+        }
+
         // Ignore all the rules information
         $this->p->readString("\x0a");
-        
+
         if ($this->p->readLast() !== "\x00") {
             throw new GameQ_ParsingException($this->p);
         }
-          
+
         while ($this->p->getLength()) {
             $this->r->addPlayer('id', $this->p->readString("\x20"));
             $this->r->addPlayer('score', $this->p->readString("\x20"));
             $this->r->addPlayer('time', $this->p->readString("\x20"));
             $this->r->addPlayer('ping', $this->p->readString("\x20"));
-            
-            if ($this->p->read() !== '"') { return false; }
+
+            if ($this->p->read() !== '"') {
+                return false;
+            }
             $this->r->addPlayer('nick', $this->p->readString('"'));
-            if ($this->p->read() !== "\x20") { return false; }
-            
-            if ($this->p->read() !== '"') { return false; }
+            if ($this->p->read() !== "\x20") {
+                return false;
+            }
+
+            if ($this->p->read() !== '"') {
+                return false;
+            }
             $this->r->addPlayer('ipaddr', $this->p->readString('"'));
-            if ($this->p->read() !== "\x20") { return false; }
-            
+            if ($this->p->read() !== "\x20") {
+                return false;
+            }
+
             $this->r->addPlayer('color_top', $this->p->readString("\x20"));
             $this->r->addPlayer('color_bottom', $this->p->readString("\x0a"));
         }
     }
+
 }
 
 ?>

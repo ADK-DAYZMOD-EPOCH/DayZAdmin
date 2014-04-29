@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: savage2.php,v 1.1 2008/05/22 14:16:11 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Savage 2 Protocol
@@ -28,25 +26,26 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens    <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_savage2 extends GameQ_Protocol
-{
+class GameQ_Protocol_savage2 extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         $this->p->skip(12);
-        $this->r->add('hostname',    $this->p->readString());
+        $this->r->add('hostname', $this->p->readString());
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
-        $this->r->add('time',        $this->p->readString());
-        $this->r->add('map',         $this->p->readString());
-        $this->r->add('nextmap',     $this->p->readString());
-        $this->r->add('location',    $this->p->readString());
+        $this->r->add('time', $this->p->readString());
+        $this->r->add('map', $this->p->readString());
+        $this->r->add('nextmap', $this->p->readString());
+        $this->r->add('location', $this->p->readString());
         $this->r->add('min_players', $this->p->readInt8());
-        $this->r->add('gametype',    $this->p->readString());
-        $this->r->add('version',     $this->p->readString());
-        $this->r->add('min_level',   $this->p->readInt8());
+        $this->r->add('gametype', $this->p->readString());
+        $this->r->add('version', $this->p->readString());
+        $this->r->add('min_level', $this->p->readInt8());
     }
+
 }
+
 ?>

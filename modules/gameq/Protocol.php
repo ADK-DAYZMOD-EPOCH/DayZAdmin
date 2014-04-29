@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,7 +18,6 @@
  *
  * $Id: Protocol.php,v 1.2 2009/02/16 15:16:06 tombuskens Exp $  
  */
- 
 require_once GAMEQ_BASE . 'Buffer.php';
 require_once GAMEQ_BASE . 'Result.php';
 
@@ -28,19 +28,19 @@ require_once GAMEQ_BASE . 'Result.php';
  * @author    Tom Buskens    <t.buskens@deviation.nl>
  * @version   $Revision: 1.2 $
  */
-abstract class GameQ_Protocol
-{ 
+abstract class GameQ_Protocol {
+
     protected $p; // Packet object
     protected $r; // Result object
-    
-    /** 
+
+    /**
      * Set packet data.
      *
      * @param    array    $packet    Packet data
      * @param    array    $result    Result data
      */
-    public function setData($packet, $result = null)
-    {
+
+    public function setData($packet, $result = null) {
         $this->p = $packet;
         $this->r = $result;
     }
@@ -50,11 +50,10 @@ abstract class GameQ_Protocol
      *
      * @return    array    Result data
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->r->fetch();
     }
-    
+
     /**
      * Join multiple packet responses into a single response.
      *
@@ -64,8 +63,7 @@ abstract class GameQ_Protocol
      * @param      array        $packets   Array containing the packets
      * @return     string       Joined server response
      */
-    public function preprocess($packets)
-    {
+    public function preprocess($packets) {
         return implode('', $packets);
     }
 
@@ -75,8 +73,7 @@ abstract class GameQ_Protocol
      * @param     string    $packet   The packet to modify
      * @return    string    The modified packet
      */
-    public function parseChallenge($packet)
-    {
+    public function parseChallenge($packet) {
         return $packet;
     }
 
@@ -86,10 +83,10 @@ abstract class GameQ_Protocol
      * @param    array    $packet_conf    The entire packet config
      * @return   array    The modified packet config
      */
-    public function modifyPacket($packet_conf)
-    {
+    public function modifyPacket($packet_conf) {
         return $packet_conf;
     }
 
 }
+
 ?>

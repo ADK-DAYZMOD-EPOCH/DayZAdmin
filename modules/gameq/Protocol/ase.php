@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: ase.php,v 1.1 2007/06/30 12:43:43 tombuskens Exp $  
  */
- 
- 
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * All-Seeing Eye protocol
@@ -28,48 +26,46 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_ase extends GameQ_Protocol
-{
+class GameQ_Protocol_ase extends GameQ_Protocol {
     /*
      * status packet
      */
-    public function status()
-    {
+
+    public function status() {
         // Header
         if ($this->p->read(4) !== 'EYE1') {
             throw new GameQ_ParsingException($this->p);
         }
 
         // Variables
-        $this->r->add('gamename',    $this->p->readPascalString(1, true));
-        $this->r->add('port',        $this->p->readPascalString(1, true));
-        $this->r->add('servername',  $this->p->readPascalString(1, true));
-        $this->r->add('gametype',    $this->p->readPascalString(1, true));
-        $this->r->add('map',         $this->p->readPascalString(1, true));
-        $this->r->add('version',     $this->p->readPascalString(1, true));
-        $this->r->add('password',    $this->p->readPascalString(1, true));
+        $this->r->add('gamename', $this->p->readPascalString(1, true));
+        $this->r->add('port', $this->p->readPascalString(1, true));
+        $this->r->add('servername', $this->p->readPascalString(1, true));
+        $this->r->add('gametype', $this->p->readPascalString(1, true));
+        $this->r->add('map', $this->p->readPascalString(1, true));
+        $this->r->add('version', $this->p->readPascalString(1, true));
+        $this->r->add('password', $this->p->readPascalString(1, true));
         $this->r->add('num_players', $this->p->readPascalString(1, true));
         $this->r->add('max_players', $this->p->readPascalString(1, true));
 
         // Key / value pairs
-        while  ($this->p->getLength()) {
+        while ($this->p->getLength()) {
 
             // If we have an empty key, we've reached the end
             $key = $this->p->readPascalString(1, true);
-            if (empty($key)) break;
-            
+            if (empty($key))
+                break;
+
             // Otherwise, add the pair
             $this->r->add(
-                $key,
-                $this->p->readPascalString(1, true)
+                    $key, $this->p->readPascalString(1, true)
             );
         }
 
         $this->players();
     }
 
-    public function players()
-    {
+    public function players() {
         while ($this->p->getLength()) {
 
             // Get the flags
@@ -96,5 +92,7 @@ class GameQ_Protocol_ase extends GameQ_Protocol
             }
         }
     }
+
 }
+
 ?>

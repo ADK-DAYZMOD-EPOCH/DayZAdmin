@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: doom3.php,v 1.10 2008/02/22 13:25:55 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Doom3 Protocol
@@ -29,10 +27,9 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.10 $
  */
-class GameQ_Protocol_doom3 extends GameQ_Protocol
-{
-    public function getinfo()
-    {
+class GameQ_Protocol_doom3 extends GameQ_Protocol {
+
+    public function getinfo() {
         // Header
         if ($this->p->readInt16() !== 65535 or $this->p->readString() !== 'infoResponse') {
             throw new GameQ_ParsingException($this->p);
@@ -42,10 +39,11 @@ class GameQ_Protocol_doom3 extends GameQ_Protocol
 
         // Var / value pairs, delimited by an empty pair
         while ($this->p->getLength()) {
-            
+
             $var = $this->p->readString();
             $val = $this->p->readString();
-            if (empty($var) and empty($val)) break;
+            if (empty($var) and empty($val))
+                break;
             $this->r->add($var, $val);
         }
 
@@ -53,17 +51,16 @@ class GameQ_Protocol_doom3 extends GameQ_Protocol
         $this->players();
     }
 
-    public function players()
-    {
+    public function players() {
         while (($id = $this->p->readInt8()) != 32) {
 
-            $this->r->addPlayer('id',   $id);
+            $this->r->addPlayer('id', $id);
             $this->r->addPlayer('ping', $this->p->readInt16());
             $this->r->addPlayer('rate', $this->p->readInt32());
             $this->r->addPlayer('name', $this->p->readString());
-            
         }
-
     }
+
 }
+
 ?>

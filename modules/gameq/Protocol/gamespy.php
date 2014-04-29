@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: gamespy.php,v 1.3 2007/10/13 08:55:39 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Gamespy Protocol
@@ -28,23 +26,23 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.3 $
  */
-class GameQ_Protocol_gamespy extends GameQ_Protocol
-{
-    public function status()
-    {
+class GameQ_Protocol_gamespy extends GameQ_Protocol {
+
+    public function status() {
         // Header
         $this->header();
-        
+
         while ($this->p->getLength()) {
 
             // Check for final keyword
             $key = $this->p->readString('\\');
-            if ($key == 'final') break;
+            if ($key == 'final')
+                break;
 
             $suffix = strrpos($key, '_');
 
             // Normal variable
-            if ($suffix === false or !is_numeric(substr($key, $suffix + 1))) {
+            if ($suffix === false or ! is_numeric(substr($key, $suffix + 1))) {
                 $this->r->add($key, $this->p->readString('\\'));
             }
             // Player (<variable>_<count>) variable
@@ -52,53 +50,50 @@ class GameQ_Protocol_gamespy extends GameQ_Protocol
                 $this->r->addPlayer(substr($key, 0, $suffix), $this->p->readString('\\'));
             }
         }
-
     }
-    
-    public function players()
-    {
+
+    public function players() {
         $this->status();
     }
 
-    public function basic()
-    {
+    public function basic() {
         $this->status();
     }
 
-    public function info()
-    {
+    public function info() {
         $this->status();
     }
 
-    public function preprocess($packets)
-    {
-        if (count($packets) == 1) return $packets[0];
+    public function preprocess($packets) {
+        if (count($packets) == 1)
+            return $packets[0];
 
         // Order packets by queryid
         $newpackets = array();
         foreach ($packets as $packet) {
 
             preg_match("#^(.*)\\\\queryid\\\\([^\\\\]+)(\\\\|$)#", $packet, $matches);
-            if (!isset($matches[1]) or !isset($matches[2])) {
+            if (!isset($matches[1]) or ! isset($matches[2])) {
                 throw new GameQ_ParsingException();
             }
 
             $newpackets[$matches[2]] = $matches[1];
         }
-        
+
         // Sort the array
         ksort($newpackets);
         // Remove the keys
         $newpackets = array_values($newpackets);
-        
-        return implode('', $newpackets);    
+
+        return implode('', $newpackets);
     }
 
-    private function header()
-    {
+    private function header() {
         if ($this->p->read() !== '\\') {
             throw new GameQ_ParsingException($this->p);
         }
     }
+
 }
+
 ?>

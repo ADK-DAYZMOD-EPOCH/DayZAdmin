@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -17,10 +18,7 @@
  *
  * $Id: tribes.php,v 1.1 2007/07/07 14:20:21 tombuskens Exp $  
  */
-
-
 require_once GAMEQ_BASE . 'Protocol.php';
-
 
 /**
  * Tribes protocol
@@ -28,33 +26,32 @@ require_once GAMEQ_BASE . 'Protocol.php';
  * @author         Tom Buskens <t.buskens@deviation.nl>
  * @version        $Revision: 1.1 $
  */
-class GameQ_Protocol_tribes extends GameQ_Protocol
-{
-    public function status()
-    {
+class GameQ_Protocol_tribes extends GameQ_Protocol {
+
+    public function status() {
         // Header
         if ($this->p->read(4) != 'c++b') {
             throw new GameQ_ParsingException($this->p);
         }
 
         // Variables
-        $this->r->add('game',        $this->p->readPascalString());
-        $this->r->add('version',     $this->p->readPascalString());
-        $this->r->add('hostname',    $this->p->readPascalString());
-        $this->r->add('dedicated',   $this->p->readInt8());
-        $this->r->add('password',    $this->p->readInt8());
+        $this->r->add('game', $this->p->readPascalString());
+        $this->r->add('version', $this->p->readPascalString());
+        $this->r->add('hostname', $this->p->readPascalString());
+        $this->r->add('dedicated', $this->p->readInt8());
+        $this->r->add('password', $this->p->readInt8());
         $this->r->add('num_players', $this->p->readInt8());
         $this->r->add('max_players', $this->p->readInt8());
-        $this->r->add('cpu_lsb',     $this->p->readInt8());
-        $this->r->add('cpu_msb',     $this->p->readInt8());
-        $this->r->add('mod',         $this->p->readPascalString());
-        $this->r->add('gametype',    $this->p->readPascalString());
-        $this->r->add('map',         $this->p->readPascalString());
-        $this->r->add('motd',        $this->p->readPascalString());
-        $this->r->add('teamcount',   $this->p->readInt8());         // Not sure
-
+        $this->r->add('cpu_lsb', $this->p->readInt8());
+        $this->r->add('cpu_msb', $this->p->readInt8());
+        $this->r->add('mod', $this->p->readPascalString());
+        $this->r->add('gametype', $this->p->readPascalString());
+        $this->r->add('map', $this->p->readPascalString());
+        $this->r->add('motd', $this->p->readPascalString());
+        $this->r->add('teamcount', $this->p->readInt8());         // Not sure
         // TODO: player listing
     }
+
 }
 ?>
 
